@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+rm -rf ./dist
+./elm make src/Main.elm --output=dist/app.default.js
+NODE_ENV=production npx terser dist/app.default.js --compress 'pure_funcs="F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9",pure_getters,keep_fargs=false,unsafe_comps,unsafe' --output=dist/app.default.terser1.unmangled.js
+NODE_ENV=production npx terser dist/app.default.terser1.unmangled.js --mangle --output=dist/app.default.terser2.mangled.js
+gzip -kf dist/app.default.gz dist/app.default.js 
+gzip -kf dist/app.default.terser1.unmangled.gz dist/app.default.terser1.unmangled.js 
+gzip -kf dist/app.default.terser2.mangled.gz dist/app.default.terser2.mangled.js 
+
+./elm make src/Main.elm --optimize --output=dist/app.optimized.js
+NODE_ENV=production npx terser dist/app.optimized.js --compress 'pure_funcs="F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9",pure_getters,keep_fargs=false,unsafe_comps,unsafe' --output=dist/app.optimized.terser1.unmangled.js
+NODE_ENV=production npx terser dist/app.optimized.terser1.unmangled.js --mangle --output=dist/app.optimized.terser2.mangled.js
+gzip -kf dist/app.optimized.gz dist/app.optimized.js 
+gzip -kf dist/app.optimized.terser1.unmangled.gz dist/app.optimized.terser1.unmangled.js 
+gzip -kf dist/app.optimized.terser2.mangled.gz dist/app.optimized.terser2.mangled.js 
+
+ls -la dist
